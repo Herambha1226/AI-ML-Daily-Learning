@@ -15,5 +15,5 @@ ax.set_ylabel("Y Axis")
 ax.set_zlabel("Z Axis")
 ax.set_title("3D Scatter Plot")
 
-plt.savefig("3d_scatter.png",dpi=300,bbox_inches = "tight")
+plt.savefig("matplotlib/graph-images/3d_scatter.png",dpi=300,bbox_inches = "tight")
 plt.show()
