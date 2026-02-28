@@ -11,4 +11,6 @@ response = requests.get(url)
 print("Status Code : ",response.status_code)
 data = response.json()
 
+if response.status_code == 200:
+    print("API is Ready To Use .")
 print(data)
