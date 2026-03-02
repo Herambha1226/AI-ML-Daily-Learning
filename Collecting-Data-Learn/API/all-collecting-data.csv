@@ -1,0 +1,11 @@
+City,Humidity,Pressure,Desription,Wind-Speed,Kelvin-Temp,Celsius-Temp,Date-Time,FeelsLikeC,Extreme_
+Vijayawada,21,1008,overcast clouds,1,311,38,2026-03-02 08:17:46.483562,22.2,0
+Ongole,41,1010,few clouds,6,305,32,2026-03-02 08:17:47.034950,20.2,0
+Tirumala - Tirupati,23,1009,few clouds,4,305,32,2026-03-02 08:17:47.592416,16.6,0
+Chīrāla,50,1010,broken clouds,6,303,30,2026-03-02 08:17:48.059157,20.0,0
+Bāpatla,49,1010,broken clouds,6,304,30,2026-03-02 08:17:48.524651,19.8,0
+Uppugunduru,49,1010,scattered clouds,6,303,30,2026-03-02 08:17:49.036771,19.8,0
+Gunturu,81,1004,overcast clouds,2,301,28,2026-03-02 08:17:49.517351,24.2,0
+Bengaluru,21,1010,broken clouds,4,304,31,2026-03-02 08:17:50.025631,15.2,0
+Visakhapatnam,53,1009,clear sky,7,303,29,2026-03-02 08:17:50.643432,19.6,0
+Chennai,52,1010,clear sky,5,301,28,2026-03-02 08:17:51.189938,18.4,0
