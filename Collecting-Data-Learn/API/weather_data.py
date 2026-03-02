@@ -1,12 +1,14 @@
 import requests 
 import pandas as pd 
+import matplotlib.pyplot as plt 
 from datetime import datetime
 import time 
+import os
 
 API_KEY = "28529f3a8c4ae80afcc3fa1ae09856de"
-city = "uppugunduru"
+cities = ["uppugunduru","ongole","chirala","gunturu","vijayawada","tirupati","bapatla"]
 
-def collect_data():
+def collect_data(city):
     print("Collecting Data Starts ....")
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
 
@@ -29,10 +31,29 @@ def collect_data():
         "main.humidity":"Humidity",
         "main.pressure":"Pressure"
     },inplace=True)
-    with open("weather_data.csv",'a') as f:
-        df.to_csv(f,mode='a',header=True,index=False)
-    print("Data Collected and Stored In File ...")
+    filename ="Collecting-Data-Learn/API/weather_data.csv" 
+    df.to_csv(filename,mode='a',header=False,index=False,encoding="utf-8",errors="ignore")
+    
+for city in cities:
+    collect_data(city)
+print("Data Collected and Stored In File ...")
 
-collect_data()
 
-#print("Selected Columns Data Of Weather : \n",df)
+def clean_collected_data():
+    df = pd.read_csv("Collecting-Data-Learn/API/weather_data.csv")
+    print(df)
+clean_collected_data()
+
+def visualize_data():
+    df = pd.read_csv("Collecting-Data-Learn/API/weather_data.csv")
+    
+    plt.bar(df["City"],df["Temp_celsius"])
+    plt.title("Compare Temperatre")
+    plt.xlabel("City Name")
+    plt.ylabel("City Temperature")
+    plt.show()
+
+visualize_data()
+
+    
+
