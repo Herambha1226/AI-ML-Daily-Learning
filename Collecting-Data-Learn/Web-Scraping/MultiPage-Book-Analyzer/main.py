@@ -5,6 +5,16 @@ import matplotlib.pyplot as plt
 from urllib.parse import urljoin
 import time
 
+
+#  This Code Can i write for collecting data from Multiple Pages of Website this code can get the data from book list and book inside page data also
+
+
+def convert_dataframe():
+    df = pd.DataFrame(data=data)
+    df.to_csv("Collecting-Data-Learn/Web-Scraping/MultiPage-Book-Analyzer/Book-Data.csv",mode='w',index=False,encoding="utf-8")
+    print(df)
+
+
 page = []
 data = []
 def collect_data():
@@ -50,16 +60,13 @@ def collect_data():
                         data.append({
                             "Book Name" : book_name,
                             "Book URL" : book_url,
+                            "Price": price,
+                            "Availability": availability,
                             **book_data
                         })
 
 
-                data.append([book_name, book_link, price, availability])
-                import json
-
-                with open("Collecting-Data-Learn/Web-Scraping/MultiPage-Book-Analyzer/books.json", "a") as f:
-                    json.dump(data, f)
-
+                
 
             next_btn = soup.find("li",class_="next")
             
@@ -69,6 +76,10 @@ def collect_data():
                 print(f"Current Page : {crnt_page}")
                 crnt_page += 1
                 time.sleep(1)
+                if crnt_page == 2:
+                    convert_dataframe()
+                    break
+                    
             else:
                 print("There is No Pages")
                 break
@@ -81,8 +92,4 @@ def collect_data():
     
 collect_data()
 
-def convert_dataframe():
-    df = pd.DataFrame(data=data,columns=["Book Name","Link","Price","Availability"])
-    df.to_csv("Collecting-Data-Learn/Web-Scraping/MultiPage-Book-Analyzer/Book-Data.csv",mode='w',index=False,encoding="utf-8")
-    print(df)
-convert_dataframe()
+
