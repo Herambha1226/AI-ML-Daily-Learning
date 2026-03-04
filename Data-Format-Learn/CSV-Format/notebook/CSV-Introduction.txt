@@ -1,0 +1,112 @@
+->  CSV - Comma Seperated Values <-
+
+-> This is the Structure of CSV
+
+name,age,city
+"Gayathri",18,"Hyderabad"
+"Rahul",20,"New Delhi"
+"Herambha",19,"Uppugunduru"
+"Karthikeya",20,"Ongole"
+"Guptha",21,"Gunturu"
+
+-> Header Of Data <-
+
+-> The Header of CSV Data is First Row because the First Row tells there Column Name
+-> Without Column Name equals Without Head of human 😂.
+
+-> Example Without Head of Column Names
+Gayathri,18,Hyderabad
+Karthikeya,20,Ongole
+
+-> There is no understand of the what is meant by Gayathri or 18 ?
+
+
+-> Seperator Of Data <-
+
+-> In the real world uses different symbols for seperating data, but defaultly having the comma(,).
+
+-> Real World Uses :
+-> ; (Europe) 
+-> \t (tab -> TSV file) (TSV  -> means Tab Seperated Values )
+
+-> Why Quotes Are Used <- 
+
+-> if Comma exists inside text:
+-> Example :
+-> name,age,city
+-> "Gayathri",18,"Delhi, India"
+-> wthout Quotes CSV Breaks
+-> Quotes Protect the text from being split
+
+-> Escape Characters <- 
+
+-> Example :
+-> "she said ""Hello"""
+-> in O/P return like this ->> she said "Hello"
+
+
+->> Real World CSV Problems <<-
+
+-> Problem - 1 : Mixed Data Types
+-> example :
+-> age
+-> 18
+-> 19
+-> twenty
+-> 20 
+-> Now Pandas will treat entire Column as string.
+-> In this problem we use pandas techniqes like 
+-> df["age"] = pd.to_numeric(df["age"],error = "coerce")
+-> error = "coerce" ->> Converts invalid values to NaN
+
+
+-> Problem -2 Encoding Issues <- 
+
+-> Sometime you see weird Characters
+-> like : GÃ¡yathri
+-> Fix : pd.read_csv("file.csv", encoding="utf-8")
+
+
+-> Example Program of CSV <- 
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+
+df.head()
+df.info()
+df.dtypes
+df.describe()
+
+df.to_csv("cleaned.csv", index=False)
+
+
+-> Handling Large CSV (For example : 1M+ Rows)
+
+
+-> Use Chunks : A chunk is a DataFrame representing a specific block of rows from your CSV file.
+
+->  for chunk in pd.read_csv("large.csv", chunksize=10000):
+        print(chunk.shape)
+
+-> Use specific Columns : 
+
+->  pd.read_csv("large.csv", usecols=["name", "age"])
+
+-> Specify data types: for using reduces memory usage.
+
+-> pd.read_csv("large.csv", dtype={"age": "int32"})
+
+
+-> Format Conversion (Very Important) <-
+
+-> CSV → JSON:
+
+df.to_json("data.json", orient="records")
+
+-> CSV → Excel
+
+df.to_excel("data.xlsx", index=False)
+
+-> CSV → Parquet (Parquet is faster and compressed)
+
+df.to_parquet("data.parquet")
