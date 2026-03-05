@@ -1,0 +1,11 @@
+ID,Name,Gender,Department,Age,Marks,Attendance,City
+1,Ram,Male,IT,20,78,85,Hyderabad
+2,Anu,Female,HR,19,88,90,Chennai
+3,Sam,Male,IT,,92,80,Bangalore
+4,Riya,Female,Finance,21,,75,Mumbai
+5,Vijay,Male,IT,20,85,,Hyderabad
+6,Sneha,Female,HR,22,91,95,Chennai
+7,Rohit,Male,Finance,19,67,60,Delhi
+8,Pooja,Female,IT,20,73,88,Bangalore
+9,Kiran,Male,HR,,82,70,Hyderabad
+10,Meena,Female,Finance,21,89,,Mumbai
