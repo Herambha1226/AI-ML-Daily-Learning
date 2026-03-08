@@ -28,4 +28,3 @@ df_scaled = scaler.fit_transform(df)
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(df_scaled)
 print(X_pca)
-
