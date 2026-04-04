@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Algorithms — Complete Mathematical Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #1a1a24;
+  --card: #14141e;
+  --border: #2a2a3a;
+  --accent: #00e5ff;
+  --accent2: #ff6b35;
+  --accent3: #a855f7;
+  --accent4: #22c55e;
+  --text: #e8e8f0;
+  --muted: #6b6b80;
+  --formula-bg: #0d1117;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --display: 'Bebas Neue', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,255,0.08) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 80%, rgba(168,85,247,0.06) 0%, transparent 60%),
+              var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(0,229,255,0.3);
+  padding: 0.4rem 1.2rem;
+  border-radius: 2px;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(3rem, 10vw, 8rem);
+  letter-spacing: 0.05em;
+  line-height: 0.95;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero h1 span { color: var(--accent); }
+
+.hero p {
+  max-width: 600px;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 300;
+  margin-bottom: 3rem;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.hero-stat { text-align: center; }
+.hero-stat .num {
+  font-family: var(--display);
+  font-size: 2.5rem;
+  color: var(--accent);
+  display: block;
+}
+.hero-stat .label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeUp 1s 0.6s ease both;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scrollPulse 2s infinite;
+}
+
+/* NAV */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-inner {
+  display: inline-flex;
+  gap: 0;
+  min-width: 100%;
+}
+
+.nav a {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 1rem 1.2rem;
+  display: inline-block;
+  transition: color 0.2s;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* SECTION */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.section-num {
+  font-family: var(--display);
+  font-size: 5rem;
+  color: var(--border);
+  line-height: 1;
+  min-width: 5rem;
+  text-align: right;
+}
+
+.section-title-block h2 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.section-title-block .badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.badge-class { color: #00e5ff; border-color: rgba(0,229,255,0.4); background: rgba(0,229,255,0.05); }
+.badge-reg { color: #ff6b35; border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.05); }
+.badge-both { color: #a855f7; border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.05); }
+.badge-ensemble { color: #22c55e; border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.05); }
+
+/* INFO GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.info-cell {
+  background: var(--card);
+  padding: 1.5rem;
+}
+
+.info-cell .ic-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.info-cell p { font-size: 0.9rem; color: var(--text); line-height: 1.6; }
+
+/* FORMULA BOX */
+.formula-section { margin: 2rem 0; }
+
+.formula-section h3 {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formula-section h3::before {
+  content: '▸';
+  color: var(--accent2);
+}
+
+.formula-box {
+  background: var(--formula-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.formula-box.orange { border-left-color: var(--accent2); }
+.formula-box.purple { border-left-color: var(--accent3); }
+.formula-box.green { border-left-color: var(--accent4); }
+
+.formula-box .f-name {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.formula-box .f-main {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  color: #e8e8f0;
+  white-space: nowrap;
+}
+
+.formula-box .f-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+/* MATH CONCEPTS */
+.math-concepts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.math-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.25rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.math-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.math-card .mc-icon {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.math-card h4 {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
+}
+
+.math-card p { font-size: 0.82rem; color: var(--muted); }
+
+/* STEPS */
+.steps { margin: 2rem 0; }
+.steps h3 {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent4);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.steps h3::before { content: '▸'; }
+
+.step-list { counter-reset: step; }
+
+.step-item {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  counter-increment: step;
+  position: relative;
+}
+
+.step-item::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--display);
+  font-size: 1.8rem;
+  color: var(--border);
+  min-width: 2.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.step-item .step-content h4 {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent4);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.05em;
+}
+
+.step-item .step-content p { font-size: 0.87rem; color: var(--muted); }
+
+.step-item .step-formula {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: var(--formula-bg);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+/* GLOSSARY */
+.glossary-section { padding: 5rem 2rem; }
+.glossary-section h2 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.glossary-section h2 span { color: var(--accent); }
+
+.glossary-subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 3rem;
+}
+
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.gloss-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.gloss-card:hover { border-color: var(--accent3); }
+
+.gloss-card .gc-term {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--accent3);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.05em;
+}
+
+.gloss-card .gc-formula {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: var(--formula-bg);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.gloss-card .gc-why, .gloss-card .gc-where, .gloss-card .gc-how {
+  font-size: 0.82rem;
+  margin-bottom: 0.4rem;
+}
+
+.gloss-card .gc-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0 0.4rem 0 0;
+}
+
+.gloss-card .gc-label.why { color: var(--accent); }
+.gloss-card .gc-label.where { color: var(--accent2); }
+.gloss-card .gc-label.how { color: var(--accent4); }
+
+.gloss-card p { color: var(--muted); line-height: 1.6; }
+
+/* COMPARISON TABLE */
+.compare-table-wrap { overflow-x: auto; margin: 2rem 0; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+th {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  text-align: left;
+}
+td {
+  border: 1px solid var(--border);
+  padding: 0.85rem 1rem;
+  color: var(--muted);
+  vertical-align: top;
+}
+tr:hover td { background: rgba(0,229,255,0.02); }
+td:first-child { font-family: var(--mono); color: var(--text); font-size: 0.8rem; }
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+footer p {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+}
+footer span { color: var(--accent); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .section-header { flex-direction: column; gap: 0.5rem; }
+  .section-num { font-size: 3rem; min-width: auto; }
+  .hero-stats { gap: 1.5rem; }
+  .math-concepts { grid-template-columns: 1fr; }
+}
+
+/* HIGHLIGHT */
+.hl-cyan { color: var(--accent); }
+.hl-orange { color: var(--accent2); }
+.hl-purple { color: var(--accent3); }
+.hl-green { color: var(--accent4); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Complete Reference Guide · Machine Learning Mathematics</div>
+  <h1>ML <span>Algorithms</span><br>Deep Dive</h1>
+  <p>Mathematics, formulas, step-by-step logic, and key concepts for every major supervised learning algorithm — from linear regression to gradient boosting.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">10</span><span class="label">Algorithms</span></div>
+    <div class="hero-stat"><span class="num">50+</span><span class="label">Formulas</span></div>
+    <div class="hero-stat"><span class="num">30+</span><span class="label">Concepts</span></div>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL TO EXPLORE</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#lr">Linear Regression</a>
+    <a href="#poly">Polynomial Regression</a>
+    <a href="#logistic">Logistic Regression</a>
+    <a href="#svm">SVM</a>
+    <a href="#knn">KNN</a>
+    <a href="#dt">Decision Trees</a>
+    <a href="#rf">Random Forest</a>
+    <a href="#gbm">Gradient Boosting</a>
+    <a href="#lasso">Lasso / Ridge</a>
+    <a href="#elastic">ElasticNet</a>
+    <a href="#glossary">Glossary</a>
+    <a href="#compare">Compare</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 1. LINEAR REGRESSION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="lr">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title-block">
+      <h2>Linear Regression</h2>
+      <div class="badges">
+        <span class="badge badge-reg">Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Fits a straight line (or hyperplane) through data to predict a continuous numeric output from one or more input features.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>House price prediction, sales forecasting, temperature estimation, any problem where output is a real number and relationships are roughly linear.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Minimizes the sum of squared differences between predicted and actual values — a convex problem with a closed-form solution.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+
+    <div class="formula-box">
+      <div class="f-name">Hypothesis / Prediction</div>
+      <div class="f-main">ŷ = θ₀ + θ₁x₁ + θ₂x₂ + ... + θₙxₙ = Xθ</div>
+      <div class="f-desc">
+        <strong>ŷ</strong> = predicted value &nbsp;|&nbsp; <strong>θ₀</strong> = bias (intercept) &nbsp;|&nbsp; <strong>θ₁…θₙ</strong> = weights (coefficients) &nbsp;|&nbsp; <strong>X</strong> = feature matrix
+      </div>
+    </div>
+
+    <div class="formula-box orange">
+      <div class="f-name">Cost Function — Mean Squared Error (MSE)</div>
+      <div class="f-main">J(θ) = (1/2m) Σᵢ (ŷᵢ − yᵢ)²</div>
+      <div class="f-desc">
+        <strong>m</strong> = number of training samples &nbsp;|&nbsp; <strong>yᵢ</strong> = actual value &nbsp;|&nbsp; The ½ simplifies the gradient. We want to minimize J(θ).
+      </div>
+    </div>
+
+    <div class="formula-box green">
+      <div class="f-name">Closed-Form Solution (Normal Equation)</div>
+      <div class="f-main">θ = (XᵀX)⁻¹ Xᵀy</div>
+      <div class="f-desc">
+        Directly computes optimal weights without iteration. Works well for small datasets (n &lt; 10,000 features). Requires matrix inversion O(n³).
+      </div>
+    </div>
+
+    <div class="formula-box purple">
+      <div class="f-name">Gradient Descent Update Rule</div>
+      <div class="f-main">θⱼ := θⱼ − α · (∂J/∂θⱼ) = θⱼ − (α/m) Σᵢ (ŷᵢ−yᵢ)xᵢⱼ</div>
+      <div class="f-desc">
+        <strong>α</strong> = learning rate (step size) &nbsp;|&nbsp; Partial derivative tells us the slope of the cost w.r.t. each weight. Applied simultaneously for all θⱼ.
+      </div>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Key Mathematics Used</h3>
+    <div class="math-concepts">
+      <div class="math-card">
+        <div class="mc-icon">∑</div>
+        <h4>Linear Algebra</h4>
+        <p>Matrix multiplication (Xθ), transpose (Xᵀ), matrix inversion — core to the Normal Equation and vectorized computation.</p>
+      </div>
+      <div class="math-card">
+        <div class="mc-icon">∂</div>
+        <h4>Partial Derivatives / Calculus</h4>
+        <p>∂J/∂θⱼ computes the gradient of the loss w.r.t. each weight. Setting it to zero gives the optimal solution analytically.</p>
+      </div>
+      <div class="math-card">
+        <div class="mc-icon">‖·‖²</div>
+        <h4>L2 Norm / Euclidean Distance</h4>
+        <p>MSE loss is proportional to the squared L2 norm of the residual vector (y − Xθ).</p>
+      </div>
+      <div class="math-card">
+        <div class="mc-icon">R²</div>
+        <h4>Statistics — R² Score</h4>
+        <p>R² = 1 − SS_res/SS_tot. Measures proportion of variance explained. R²=1 is perfect, R²=0 means model predicts the mean.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Initialize Weights</h4>
+          <p>Set θ = [0, 0, …, 0] or small random values. Also initialize bias θ₀ = 0.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Predictions</h4>
+          <p>For all samples: ŷ = Xθ (matrix multiplication gives predictions in one step).</p>
+          <span class="step-formula">ŷ = Xθ</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Loss (MSE)</h4>
+          <p>Calculate how wrong predictions are: J(θ) = (1/2m)||ŷ − y||²</p>
+          <span class="step-formula">J = (1/2m) Σ(ŷ−y)²</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Gradient</h4>
+          <p>∂J/∂θ = (1/m) Xᵀ(Xθ − y). This is the direction of steepest ascent.</p>
+          <span class="step-formula">∇J = (1/m) Xᵀ(ŷ − y)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Update Weights</h4>
+          <p>Move in the opposite direction of gradient: θ := θ − α∇J. Repeat until convergence.</p>
+          <span class="step-formula">θ := θ − α · ∇J</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Check Convergence</h4>
+          <p>Stop when ||J(θ_new) − J(θ_old)|| &lt; ε (tolerance), or after max iterations. Return final θ.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 2. POLYNOMIAL REGRESSION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="poly">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title-block">
+      <h2>Polynomial Regression</h2>
+      <div class="badges">
+        <span class="badge badge-reg">Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Extends linear regression by adding polynomial terms (x², x³ …) as new features, enabling it to fit curved, non-linear data.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Growth curves, dose-response relationships, physics simulations, any domain where relationships are curved but smooth.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>By creating new features (x², x³ …) the problem becomes linear in the new feature space — so linear regression math still applies.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Degree-d Polynomial Hypothesis</div>
+      <div class="f-main">ŷ = θ₀ + θ₁x + θ₂x² + θ₃x³ + ... + θ_d x^d</div>
+      <div class="f-desc">For multiple features x₁, x₂: also includes cross-terms like x₁x₂, x₁²x₂, etc. Feature engineering creates these new columns.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Feature Mapping (Transformation)</div>
+      <div class="f-main">φ(x) = [1, x, x², x³, ..., x^d]</div>
+      <div class="f-desc">The original feature x is mapped to a higher-dimensional vector φ(x). The model is then linear: ŷ = θᵀ φ(x).</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">Bias-Variance Tradeoff</div>
+      <div class="f-main">Total Error = Bias² + Variance + Irreducible Noise</div>
+      <div class="f-desc">Low degree (d=1) → high bias, low variance (underfitting). High degree (d=10) → low bias, high variance (overfitting). Choose d by cross-validation.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Choose Polynomial Degree d</h4>
+          <p>Use domain knowledge or cross-validation to select d. Start with d=2 or d=3.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Transform Features</h4>
+          <p>Create new feature matrix: [x, x², x³, …, x^d]. For multi-feature: also include interaction terms.</p>
+          <span class="step-formula">X_poly = PolynomialFeatures(d).fit_transform(X)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Apply Linear Regression</h4>
+          <p>Run standard linear regression on the transformed feature matrix. All linear regression math now applies.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Regularize (if needed)</h4>
+          <p>High-degree polynomials overfit easily. Add L1 (Lasso) or L2 (Ridge) regularization to the weights.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 3. LOGISTIC REGRESSION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="logistic">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title-block">
+      <h2>Logistic Regression</h2>
+      <div class="badges">
+        <span class="badge badge-class">Classification</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Predicts the probability that an input belongs to a class (0 or 1). Uses the sigmoid function to squash output between 0 and 1.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Email spam detection, disease diagnosis (yes/no), credit risk scoring, any binary or multi-class classification with probabilistic output.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Models the log-odds as a linear function, then converts to probability via sigmoid. Maximum likelihood estimation finds optimal weights.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Sigmoid (Logistic) Function</div>
+      <div class="f-main">σ(z) = 1 / (1 + e^(−z)) &nbsp;&nbsp; where z = θᵀx</div>
+      <div class="f-desc">Output is always in (0,1). Interpreted as P(y=1|x). If σ(z) ≥ 0.5 → predict class 1; else → class 0.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Log Loss (Binary Cross-Entropy)</div>
+      <div class="f-main">J(θ) = −(1/m) Σ [y·log(ŷ) + (1−y)·log(1−ŷ)]</div>
+      <div class="f-desc">Penalizes confident wrong predictions heavily. Convex function — guaranteed to find global minimum with gradient descent.</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Gradient (Gradient Descent Update)</div>
+      <div class="f-main">∂J/∂θ = (1/m) Xᵀ(σ(Xθ) − y)</div>
+      <div class="f-desc">Identical in form to linear regression gradient — the sigmoid is built into ŷ = σ(Xθ). Update: θ := θ − α · ∂J/∂θ</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">Log-Odds (Logit Function)</div>
+      <div class="f-main">log(p / (1−p)) = θ₀ + θ₁x₁ + ... + θₙxₙ</div>
+      <div class="f-desc">The left side is the log-odds (logit). Logistic regression models this as linear in x. Exponentiating gives the odds ratio.</div>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Key Mathematics</h3>
+    <div class="math-concepts">
+      <div class="math-card">
+        <div class="mc-icon">e^z</div>
+        <h4>Exponential / Sigmoid</h4>
+        <p>The natural exponential e^z compresses any real-valued linear combination into probability (0,1).</p>
+      </div>
+      <div class="math-card">
+        <div class="mc-icon">log</div>
+        <h4>Log Likelihood</h4>
+        <p>Maximum Likelihood Estimation (MLE) maximizes log P(y|X,θ). Negating gives the cross-entropy loss to minimize.</p>
+      </div>
+      <div class="math-card">
+        <div class="mc-icon">∂²</div>
+        <h4>Convexity</h4>
+        <p>Log loss is strictly convex — Hessian matrix is positive semi-definite — so gradient descent always finds global minimum.</p>
+      </div>
+      <div class="math-card">
+        <div class="mc-icon">🎯</div>
+        <h4>Decision Boundary</h4>
+        <p>θᵀx = 0 is the decision boundary. Points on either side get different class predictions. Can be non-linear with polynomial features.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Initialize Weights θ</h4>
+          <p>Set all weights to 0 or small random values. θ ∈ ℝⁿ⁺¹ (n features + bias).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Linear Combination z</h4>
+          <p>z = Xθ (matrix multiply input features with weight vector).</p>
+          <span class="step-formula">z = θ₀ + θ₁x₁ + ... + θₙxₙ</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Apply Sigmoid → Get Probabilities</h4>
+          <p>ŷ = σ(z) = 1/(1+e^(−z)). Each output ŷᵢ ∈ (0,1) is P(y=1 | xᵢ).</p>
+          <span class="step-formula">ŷ = 1 / (1 + exp(−Xθ))</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Cross-Entropy Loss</h4>
+          <p>J = −(1/m) Σ [y·log(ŷ) + (1−y)·log(1−ŷ)]</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Gradient & Update</h4>
+          <p>∇J = (1/m) Xᵀ(ŷ−y). Update θ := θ − α·∇J. Repeat until convergence.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Predict Class Labels</h4>
+          <p>ŷ_class = 1 if σ(θᵀx) ≥ 0.5 else 0. Threshold can be adjusted for precision/recall tradeoff.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 4. SVM -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="svm">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-title-block">
+      <h2>Support Vector Machines</h2>
+      <div class="badges">
+        <span class="badge badge-class">Classification</span>
+        <span class="badge badge-reg">Regression (SVR)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Finds the maximum-margin hyperplane that best separates two classes. Only the support vectors (closest points) define the boundary.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Text classification, image recognition, bioinformatics (protein classification), small-to-medium high-dimensional datasets.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Maximum margin = best generalization. The kernel trick maps data to higher dimensions implicitly without computing the transformation.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Decision Function / Hyperplane</div>
+      <div class="f-main">f(x) = wᵀx + b &nbsp;&nbsp; Predict: sign(wᵀx + b)</div>
+      <div class="f-desc"><strong>w</strong> = weight vector (normal to hyperplane) &nbsp;|&nbsp; <strong>b</strong> = bias &nbsp;|&nbsp; Margin = 2 / ||w||. Goal: maximize margin.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Hard Margin SVM (Primal Objective)</div>
+      <div class="f-main">minimize: ½||w||² &nbsp;&nbsp; subject to: yᵢ(wᵀxᵢ + b) ≥ 1 ∀i</div>
+      <div class="f-desc">Convex quadratic programming problem. yᵢ ∈ {−1, +1}. The constraint ensures all points are correctly classified with margin ≥ 1.</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Soft Margin SVM (with Slack Variables)</div>
+      <div class="f-main">minimize: ½||w||² + C Σᵢ ξᵢ &nbsp;&nbsp; subject to: yᵢ(wᵀxᵢ+b) ≥ 1−ξᵢ, ξᵢ ≥ 0</div>
+      <div class="f-desc"><strong>ξᵢ</strong> = slack variable (how much point i violates margin) &nbsp;|&nbsp; <strong>C</strong> = regularization: large C = less tolerance for violations (risk overfitting).</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">Kernel Trick</div>
+      <div class="f-main">K(xᵢ, xⱼ) = φ(xᵢ)ᵀφ(xⱼ)</div>
+      <div class="f-desc">
+        RBF Kernel: K(x,z) = exp(−γ||x−z||²) &nbsp;|&nbsp; Polynomial: K(x,z) = (xᵀz + c)^d &nbsp;|&nbsp; Avoids explicit computation of φ(x).
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="f-name">Dual Problem (Lagrangian)</div>
+      <div class="f-main">maximize: Σαᵢ − ½ Σᵢ Σⱼ αᵢαⱼyᵢyⱼ K(xᵢ,xⱼ)</div>
+      <div class="f-desc"><strong>αᵢ</strong> = Lagrange multipliers. Non-zero αᵢ → support vectors. Decision: f(x) = Σᵢ αᵢ yᵢ K(xᵢ,x) + b</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Choose Kernel & Hyperparameters</h4>
+          <p>Select kernel (linear, RBF, poly), set C (regularization), γ (RBF bandwidth). Use cross-validation / grid search.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Kernel Matrix K</h4>
+          <p>K[i,j] = K(xᵢ, xⱼ) — an m×m matrix of pairwise similarities. This is the Gram matrix.</p>
+          <span class="step-formula">K[i,j] = exp(−γ ||xᵢ − xⱼ||²)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Solve Quadratic Programming Problem</h4>
+          <p>Find Lagrange multipliers αᵢ ≥ 0 that maximize the dual objective using QP solvers (SMO algorithm in practice).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Identify Support Vectors</h4>
+          <p>Points with αᵢ > 0 are support vectors. Only these matter for prediction — others are discarded.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Bias b</h4>
+          <p>For any support vector: b = yᵢ − Σⱼ αⱼ yⱼ K(xⱼ, xᵢ). Average over all support vectors for stability.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Predict New Points</h4>
+          <p>f(x) = sign(Σᵢ αᵢ yᵢ K(xᵢ, x) + b). Sum is only over support vectors (αᵢ > 0).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 5. KNN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="knn">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-title-block">
+      <h2>K-Nearest Neighbors</h2>
+      <div class="badges">
+        <span class="badge badge-both">Classification & Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>For each test point, finds the k most similar training points (neighbors) and predicts by majority vote (classification) or average (regression).</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Recommendation systems, anomaly detection, imputing missing values, small-to-medium datasets where interpretability matters.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Assumes nearby points have similar labels (locality assumption). No training phase — the entire dataset IS the model (lazy learning).</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Euclidean Distance (most common)</div>
+      <div class="f-main">d(x, xᵢ) = √(Σⱼ (xⱼ − xᵢⱼ)²) = ||x − xᵢ||₂</div>
+      <div class="f-desc">Straight-line distance in feature space. Sensitive to scale — always normalize features first (z-score or min-max scaling).</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Manhattan Distance</div>
+      <div class="f-main">d(x, xᵢ) = Σⱼ |xⱼ − xᵢⱼ| = ||x − xᵢ||₁</div>
+      <div class="f-desc">Sum of absolute differences. Better for high-dimensional spaces. Less sensitive to outliers than Euclidean.</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Minkowski Distance (General)</div>
+      <div class="f-main">d(x, xᵢ) = (Σⱼ |xⱼ − xᵢⱼ|^p)^(1/p)</div>
+      <div class="f-desc">p=1 → Manhattan, p=2 → Euclidean, p=∞ → Chebyshev (max coordinate diff). Choose p via cross-validation.</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">KNN Prediction</div>
+      <div class="f-main">Classification: ŷ = argmax_c Σᵢ∈N_k 𝟙[yᵢ=c] &nbsp;&nbsp; Regression: ŷ = (1/k) Σᵢ∈N_k yᵢ</div>
+      <div class="f-desc"><strong>N_k</strong> = set of k nearest neighbors &nbsp;|&nbsp; Classification = majority vote &nbsp;|&nbsp; Regression = arithmetic mean of neighbor labels.</div>
+    </div>
+    <div class="formula-box">
+      <div class="f-name">Weighted KNN</div>
+      <div class="f-main">ŷ = Σᵢ∈N_k wᵢ·yᵢ / Σᵢ∈N_k wᵢ &nbsp;&nbsp; where wᵢ = 1/d(x, xᵢ)</div>
+      <div class="f-desc">Closer neighbors vote more. Inverse distance weighting reduces the arbitrary nature of hard k cutoff. Better in practice.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Choose k & Distance Metric</h4>
+          <p>k = number of neighbors. Odd k avoids ties. Use cross-validation. More k → smoother boundary but may miss patterns.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Normalize Features</h4>
+          <p>Scale all features to same range (z-score: x' = (x−μ)/σ or min-max: x' = (x−min)/(max−min)). Critical for distance metrics.</p>
+          <span class="step-formula">x' = (x − μ) / σ</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Store Training Data</h4>
+          <p>No model training! Simply store all (xᵢ, yᵢ) pairs. Use KD-Tree or Ball-Tree for efficient lookup in high dimensions.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Distances to All Training Points</h4>
+          <p>For query x_new: compute d(x_new, xᵢ) for all i. O(n·d) per prediction where n = training size, d = dimensions.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Find k Nearest Neighbors</h4>
+          <p>Sort distances and select k smallest. These are the neighbors N_k = {x(1), x(2), …, x(k)}.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Aggregate Labels</h4>
+          <p>Classification: majority vote. Regression: mean (or weighted mean). Return prediction.</p>
+          <span class="step-formula">ŷ = majority_vote(y₁, y₂, ..., yₖ)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 6. DECISION TREES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="dt">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-title-block">
+      <h2>Decision Trees</h2>
+      <div class="badges">
+        <span class="badge badge-both">Classification & Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Recursively splits data on the feature threshold that best separates the classes. Creates an if-then tree of decisions.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Medical diagnosis, customer segmentation, fraud rules, any problem needing interpretable, human-readable decision rules.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Greedily maximizes information gain (or Gini reduction) at each split, partitioning the feature space into axis-aligned rectangles.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Gini Impurity (CART)</div>
+      <div class="f-main">Gini(S) = 1 − Σₖ pₖ² = 1 − Σₖ (nₖ/n)²</div>
+      <div class="f-desc"><strong>pₖ</strong> = fraction of class k in node S. Gini = 0 → pure node (all same class). Gini = 0.5 → maximally impure (equal classes). Used in scikit-learn by default.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Entropy (Information Gain)</div>
+      <div class="f-main">H(S) = −Σₖ pₖ log₂(pₖ)</div>
+      <div class="f-desc">Shannon entropy measures disorder. Pure node → H = 0. Uniform → H = log₂(K). Information Gain: IG = H(parent) − Σ (|child|/|parent|)·H(child)</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Best Split Selection</div>
+      <div class="f-main">split* = argmax_(feature j, threshold t) [ H(S) − Σ (|Sᵥ|/|S|)·H(Sᵥ) ]</div>
+      <div class="f-desc">For each feature j and each threshold t: compute weighted impurity of left/right children. Choose (j, t) that maximizes information gain.</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">Variance Reduction (Regression Trees)</div>
+      <div class="f-main">Gain = Var(S) − Σᵥ (|Sᵥ|/|S|)·Var(Sᵥ)</div>
+      <div class="f-desc">For regression: minimize MSE within each child. Predict the mean of training values in the leaf: ŷ_leaf = (1/|leaf|) Σ yᵢ</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps (CART / ID3)</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Start at Root Node with All Data</h4>
+          <p>The root contains all m training samples. Compute current impurity H(root).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Find Best Split</h4>
+          <p>For every feature j and every threshold t: split data into left (xⱼ &lt; t) and right (xⱼ ≥ t). Compute information gain. Pick (j*, t*) with max gain.</p>
+          <span class="step-formula">IG(j,t) = H(parent) − wₗH(left) − wᵣH(right)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Split the Node</h4>
+          <p>Create left and right child nodes. Assign samples according to x[j*] &lt; t* (left) or ≥ t* (right).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Recurse on Children</h4>
+          <p>Apply steps 2–3 recursively on each child. Stop when: node is pure, max_depth reached, min_samples_split not met, or no gain.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Assign Leaf Predictions</h4>
+          <p>Classification: most frequent class. Regression: mean of y values in leaf.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Prune (Optional)</h4>
+          <p>Post-prune: remove branches that don't improve validation accuracy. Prevents overfitting. Or use max_depth, min_samples_leaf as pre-pruning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 7. RANDOM FOREST -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="rf">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <div class="section-title-block">
+      <h2>Random Forest</h2>
+      <div class="badges">
+        <span class="badge badge-ensemble">Ensemble</span>
+        <span class="badge badge-both">Classification & Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Trains many decision trees independently on bootstrapped subsets of data with random feature subsets, then aggregates predictions.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Tabular data competitions, medical imaging, financial modeling, feature selection, any task where a single tree overfits.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Bagging + random feature selection decorrelates trees. Averaging uncorrelated noisy predictors reduces variance without increasing bias.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Bootstrap Sampling</div>
+      <div class="f-main">For tree t: Sample m points WITH replacement from training set D → Dₜ</div>
+      <div class="f-desc">~63% of unique samples appear in each bootstrap bag. The remaining ~37% are "out-of-bag" (OOB) samples, useful for free validation.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Random Feature Subsampling</div>
+      <div class="f-main">At each split: select √p features randomly (classification) or p/3 (regression)</div>
+      <div class="f-desc"><strong>p</strong> = total number of features. Random subsampling ensures trees are different even on similar bootstrap samples — decorrelation key.</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Ensemble Prediction</div>
+      <div class="f-main">Classification: ŷ = majority_vote{T₁(x), T₂(x), ..., Tₙ(x)}</div>
+      <div class="f-desc">Regression: ŷ = (1/B) Σₜ Tₜ(x) &nbsp;&nbsp; B = number of trees. More trees → lower variance, diminishing returns after ~100–500 trees.</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">Bias-Variance Decomposition</div>
+      <div class="f-main">Var(avg of B trees) = ρ·σ² + (1−ρ)σ²/B</div>
+      <div class="f-desc"><strong>ρ</strong> = average correlation between trees &nbsp;|&nbsp; <strong>σ²</strong> = variance of single tree. As B→∞, variance → ρσ². Lower ρ (via random features) → lower final variance.</div>
+    </div>
+    <div class="formula-box">
+      <div class="f-name">Feature Importance (Mean Decrease Impurity)</div>
+      <div class="f-main">FI(j) = Σₜ Σₙ (|Sₙ|/|S|) · ΔImpurity(n, feature j)</div>
+      <div class="f-desc">Sum over all trees t and all nodes n where feature j was used: weighted impurity decrease. Normalized to sum to 1.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Set Hyperparameters</h4>
+          <p>n_estimators (number of trees), max_depth, min_samples_split, max_features (√p or p/3), random_state.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Bootstrap Sample for Each Tree</h4>
+          <p>Draw m samples with replacement from training data. Each tree sees a different ~63% of data.</p>
+          <span class="step-formula">Dₜ = bootstrap_sample(D, size=m)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Grow Deep Tree with Random Features</h4>
+          <p>At each node split: randomly select √p features, then find the best split among ONLY those features. Grow to max depth (no pruning).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Repeat for B Trees</h4>
+          <p>All trees are trained independently (parallelizable). Store all B trees.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Aggregate Predictions</h4>
+          <p>For new x: get prediction from each tree, then majority vote (classification) or mean (regression).</p>
+          <span class="step-formula">ŷ = (1/B) Σ Tₜ(x)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute OOB Score (Free Validation)</h4>
+          <p>For each training point, average predictions from trees that did NOT see it (OOB samples). Unbiased estimate of generalization error.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 8. GRADIENT BOOSTING -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="gbm">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <div class="section-title-block">
+      <h2>Gradient Boosting Machines</h2>
+      <div class="badges">
+        <span class="badge badge-ensemble">Ensemble</span>
+        <span class="badge badge-both">Classification & Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Builds trees sequentially, each one correcting the errors (residuals) of the previous. Gradient descent in function space.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Kaggle competitions, click-through-rate prediction, ranking problems, structured/tabular data. XGBoost, LightGBM, CatBoost are variants.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Fits each new tree to the negative gradient of the loss — this is gradient descent on the space of functions, not parameters.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Ensemble Model (Additive)</div>
+      <div class="f-main">F_M(x) = F₀(x) + Σₘ₌₁ᴹ η·hₘ(x)</div>
+      <div class="f-desc"><strong>F₀</strong> = initial model (e.g., mean of y) &nbsp;|&nbsp; <strong>hₘ</strong> = m-th tree &nbsp;|&nbsp; <strong>η</strong> = learning rate (shrinkage). Trees are added sequentially.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Pseudo-Residuals (Negative Gradient)</div>
+      <div class="f-main">rᵢₘ = −[∂L(yᵢ, F(xᵢ)) / ∂F(xᵢ)]_{F=Fₘ₋₁}</div>
+      <div class="f-desc">For MSE: rᵢ = yᵢ − ŷᵢ (actual residuals). For log-loss: rᵢ = yᵢ − σ(ŷᵢ). The new tree hₘ is fit to predict these residuals.</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Line Search / Leaf Values</div>
+      <div class="f-main">γⱼₘ = argmin_γ Σᵢ∈Rⱼₘ L(yᵢ, Fₘ₋₁(xᵢ) + γ)</div>
+      <div class="f-desc">For each leaf region Rⱼₘ: find optimal output value γ that minimizes loss. For MSE: γ = mean of residuals in leaf.</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">XGBoost Objective (2nd-Order Approximation)</div>
+      <div class="f-main">Obj ≈ Σᵢ [gᵢ·fₜ(xᵢ) + ½hᵢ·fₜ(xᵢ)²] + Ω(fₜ)</div>
+      <div class="f-desc"><strong>gᵢ</strong> = first-order gradient &nbsp;|&nbsp; <strong>hᵢ</strong> = second-order gradient (Hessian) &nbsp;|&nbsp; Ω(f) = regularization term on tree complexity. Enables faster, better optimization.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Initialize with Constant Prediction</h4>
+          <p>F₀(x) = argmin_γ Σᵢ L(yᵢ, γ). For MSE: F₀ = mean(y). For log-loss: F₀ = log(mean_y / (1−mean_y)).</p>
+          <span class="step-formula">F₀ = mean(y) or log(p̄/(1−p̄))</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Pseudo-Residuals</h4>
+          <p>rᵢ = −∂L(yᵢ, Fₘ₋₁(xᵢ))/∂F. These are the "errors" the next tree should correct.</p>
+          <span class="step-formula">rᵢ = yᵢ − Fₘ₋₁(xᵢ) (for MSE)</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Fit a Shallow Tree hₘ to Residuals</h4>
+          <p>Regress the pseudo-residuals using a decision tree (typically max_depth 3–8). Tree learns which features explain the errors.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Compute Leaf Output Values</h4>
+          <p>Optimal leaf value = average of residuals in leaf (MSE). More generally: solve argmin γ over L for each leaf.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Update the Ensemble</h4>
+          <p>Fₘ(x) = Fₘ₋₁(x) + η·hₘ(x). Learning rate η (0.01–0.3) shrinks contribution of each tree → better generalization.</p>
+          <span class="step-formula">Fₘ = Fₘ₋₁ + η · hₘ</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Repeat for M iterations</h4>
+          <p>Steps 2–5 repeat M times (n_estimators). Use early stopping: halt if validation loss doesn't improve for k rounds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 9. LASSO + RIDGE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="lasso">
+  <div class="section-header">
+    <div class="section-num">09</div>
+    <div class="section-title-block">
+      <h2>Lasso &amp; Ridge Regression</h2>
+      <div class="badges">
+        <span class="badge badge-reg">Regularization</span>
+        <span class="badge badge-reg">Regression</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Adds a penalty term to the linear regression cost function to shrink weights and prevent overfitting. Lasso (L1) can eliminate features; Ridge (L2) shrinks them.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>High-dimensional data (many features), multicollinearity, feature selection (Lasso), when all features are relevant (Ridge), genomics, text, finance.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>Regularization constrains the hypothesis space. L1 creates sparse solutions (many θ = 0) due to the diamond-shaped constraint. L2 distributes weight evenly.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">Ridge Regression (L2 Regularization)</div>
+      <div class="f-main">J(θ) = (1/2m) Σ(ŷᵢ−yᵢ)² + λ·Σⱼ θⱼ²</div>
+      <div class="f-desc"><strong>λ</strong> (alpha) = regularization strength &nbsp;|&nbsp; Penalty = sum of squared weights. Closed form: θ = (XᵀX + λI)⁻¹ Xᵀy. Always invertible even if XᵀX is singular.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Lasso Regression (L1 Regularization)</div>
+      <div class="f-main">J(θ) = (1/2m) Σ(ŷᵢ−yᵢ)² + λ·Σⱼ |θⱼ|</div>
+      <div class="f-desc">Penalty = sum of absolute weights. Non-differentiable at θ=0 → requires coordinate descent or subgradient methods. Produces sparse θ (feature selection).</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Ridge Gradient (Closed Form)</div>
+      <div class="f-main">θ_ridge = (XᵀX + λI)⁻¹ Xᵀy</div>
+      <div class="f-desc">The λI term ensures the matrix is always invertible. Gradient: ∂J/∂θ = (1/m) Xᵀ(Xθ−y) + 2λθ. Update: θⱼ := θⱼ(1−2αλ) − (α/m)Σᵢ(ŷᵢ−yᵢ)xᵢⱼ</div>
+    </div>
+    <div class="formula-box purple">
+      <div class="f-name">Lasso Soft-Thresholding (Coordinate Descent)</div>
+      <div class="f-main">θⱼ = sign(ρⱼ) · max(|ρⱼ| − λ, 0)</div>
+      <div class="f-desc"><strong>ρⱼ</strong> = partial residual correlation with feature j. If |ρⱼ| &lt; λ → θⱼ = 0 (feature eliminated!). This is the soft-thresholding operator — key to sparsity.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Lasso vs Ridge: Key Differences</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Constraint Shape</h4>
+          <p>Ridge: circular/spherical constraint ||θ||₂ ≤ t. Lasso: diamond/hypercube ||θ||₁ ≤ t. The corners of the L1 diamond are on axes → sparse solutions.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Effect on Coefficients</h4>
+          <p>Ridge: shrinks all θⱼ toward 0 but never exactly 0. Lasso: can set θⱼ = exactly 0 → automatic feature selection. Use Lasso when many features are irrelevant.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Multicollinearity</h4>
+          <p>Ridge is better when features are correlated (distributes weight evenly). Lasso arbitrarily picks one correlated feature and drops others.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Choosing λ</h4>
+          <p>Use k-fold cross-validation. Plot validation error vs log(λ). Too large → underfitting; too small → overfitting. LassoCV / RidgeCV automate this.</p>
+          <span class="step-formula">λ* = argmin CV_error(λ)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 10. ELASTICNET -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="elastic">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <div class="section-title-block">
+      <h2>ElasticNet Regularization</h2>
+      <div class="badges">
+        <span class="badge badge-reg">Regularization</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="ic-label">What it does</div>
+      <p>Combines L1 (Lasso) and L2 (Ridge) penalties linearly. Gets the best of both: sparsity from L1 and grouping from L2.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Where to use</div>
+      <p>Genomics (p >> n), text mining, when there are correlated feature groups and you want sparse solutions. Better than pure Lasso for grouped features.</p>
+    </div>
+    <div class="info-cell">
+      <div class="ic-label">Why it works</div>
+      <p>L1 encourages sparsity, L2 handles correlated features together. l1_ratio controls the mix — when correlated features exist, all are selected or dropped together.</p>
+    </div>
+  </div>
+
+  <div class="formula-section">
+    <h3>Core Formulas</h3>
+    <div class="formula-box">
+      <div class="f-name">ElasticNet Cost Function</div>
+      <div class="f-main">J(θ) = (1/2m) Σ(ŷᵢ−yᵢ)² + λ·[ρ·Σ|θⱼ| + (1−ρ)/2 · Σθⱼ²]</div>
+      <div class="f-desc"><strong>λ</strong> = overall regularization strength &nbsp;|&nbsp; <strong>ρ</strong> (l1_ratio) = mix between L1 and L2. ρ=1 → pure Lasso; ρ=0 → pure Ridge; ρ=0.5 → equal mix.</div>
+    </div>
+    <div class="formula-box orange">
+      <div class="f-name">Coordinate Descent Update</div>
+      <div class="f-main">θⱼ = sign(ρⱼ) · max(|ρⱼ| − λρ, 0) / (1 + λ(1−ρ))</div>
+      <div class="f-desc">Numerator: soft-thresholding (L1 part). Denominator: 1 + λ(1−ρ) is the L2 shrinkage. Both happen simultaneously in each coordinate update step.</div>
+    </div>
+    <div class="formula-box green">
+      <div class="f-name">Naive Elastic Net</div>
+      <div class="f-main">Augment X with √λ₂·I and augment y with 0. Then apply Lasso.</div>
+      <div class="f-desc">The classic trick: adding p artificial features allows Lasso coordinate descent to solve the ElasticNet. Same algorithm, larger system.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h3>Algorithm Steps</h3>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Set λ and ρ (l1_ratio)</h4>
+          <p>Tune both via cross-validation. Common: ElasticNetCV with a grid of l1_ratios [0.1, 0.5, 0.7, 0.9, 0.95, 1.0].</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Initialize Weights θ = 0</h4>
+          <p>Start from the zero vector. Coordinate descent converges from any starting point for ElasticNet (convex).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Coordinate Descent Loop</h4>
+          <p>For each feature j: compute partial residual ρⱼ = Xⱼᵀ(y − X_{-j}θ_{-j}). Apply combined soft-threshold update for θⱼ.</p>
+          <span class="step-formula">θⱼ ← S(ρⱼ, λρ) / (1 + λ(1−ρ))</span>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-content">
+          <h4>Cycle Until Convergence</h4>
+          <p>Repeat coordinate updates for all j in order until max change in θ &lt; tolerance. Typically converges in &lt; 1000 passes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- GLOSSARY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="glossary-section" id="glossary">
+  <h2>Key <span>Concepts</span> Glossary</h2>
+  <p class="glossary-subtitle">WHAT · WHY · WHERE · HOW — Every term explained</p>
+
+  <div class="glossary-grid">
+
+    <div class="gloss-card">
+      <div class="gc-term">Bias (θ₀ / b / intercept)</div>
+      <div class="gc-formula">ŷ = θ₀ + θ₁x₁ + ...</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Without bias, the model is forced through the origin — limits flexibility. Bias shifts the decision boundary or regression line.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Every parametric model: linear regression, logistic regression, neural networks, SVMs.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Treat it as an extra weight with constant input x₀=1. Updated by gradient descent like any other weight.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Weights / Coefficients (θ, w)</div>
+      <div class="gc-formula">ŷ = Σⱼ θⱼ·xⱼ</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Each weight determines how much each feature influences the output. Learned from data by minimizing loss.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> All linear models, neural networks, SVMs. In trees: not explicit — splitting thresholds play the role of weights.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Updated via gradient descent: θⱼ := θⱼ − α·∂J/∂θⱼ. Represents the marginal effect of feature j on prediction.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Gradient Descent</div>
+      <div class="gc-formula">θ := θ − α·∇J(θ)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Most loss functions don't have closed-form solutions. Gradient descent iteratively follows the steepest downhill direction.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Linear regression, logistic regression, neural networks, gradient boosting.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Batch GD: uses all data; SGD: one sample; Mini-batch: k samples. Learning rate α controls step size.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Learning Rate (α)</div>
+      <div class="gc-formula">θ := θ − α · ∇J</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Too small → slow convergence. Too large → overshoots, may diverge. α is the most critical hyperparameter in gradient-based methods.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> All gradient-based optimization: linear regression, logistic regression, GBM, neural nets.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Tune via learning rate schedulers, warm restarts, or adaptive methods (Adam, RMSprop). Typical range: 0.001–0.1.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Loss / Cost Function</div>
+      <div class="gc-formula">MSE: Σ(ŷ−y)²/m, Cross-Entropy: −Σy·log(ŷ)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Quantifies "how wrong" the model is. Minimizing loss = making better predictions. The choice of loss determines what the model optimizes.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> MSE for regression; Cross-entropy for classification; Hinge loss for SVM.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Computed over training set, differentiated w.r.t. weights to get gradient direction for update.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Overfitting &amp; Underfitting</div>
+      <div class="gc-formula">Error = Bias² + Variance + Noise</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Overfitting: model memorizes training data, fails on new data (high variance). Underfitting: model too simple, misses patterns (high bias).</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> All ML models. High-degree polynomial and deep trees overfit; linear models may underfit.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Detect via train vs. validation loss gap. Fix overfitting: regularization, more data, dropout. Fix underfitting: more complex model, more features.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Regularization (λ / C)</div>
+      <div class="gc-formula">J_reg = J_data + λ · penalty(θ)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Constrains weight magnitudes to prevent overfitting. Adds a penalty for complexity to the loss function.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Ridge (L2), Lasso (L1), ElasticNet. Also: dropout (neural nets), max_depth (trees), C in SVM.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> L1: |θ| penalty → sparsity. L2: θ² penalty → small weights. Tune λ via cross-validation. Larger λ = more regularization.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Kernel (SVM)</div>
+      <div class="gc-formula">K(x,z) = φ(x)ᵀφ(z)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Maps data to higher-dimensional space where it becomes linearly separable. The "kernel trick" computes K(x,z) without ever computing φ explicitly.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> SVM, Gaussian Processes, Kernel PCA, kernel regression.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Linear kernel for high-dim text; RBF for smooth boundaries; Polynomial for explicit degree-d boundaries.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Entropy &amp; Information Gain</div>
+      <div class="gc-formula">H = −Σ p·log₂(p), IG = H(parent) − Σwᵢ·H(child)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Measures impurity/disorder in a node. Higher information gain → the split is more useful for separating classes.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Decision trees (ID3, C4.5). Gini impurity is the alternative used by CART/scikit-learn.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Compute entropy before and after each possible split. Choose the split with maximum information gain or minimum Gini.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Support Vectors</div>
+      <div class="gc-formula">αᵢ > 0 ↔ xᵢ is a support vector</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Only the training points closest to the decision boundary (support vectors) define the margin and influence the model. Others are irrelevant.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> SVM classification and SVR regression.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Identified via Lagrange multipliers αᵢ from the dual problem. Non-zero αᵢ → support vector. Prediction: f(x) = Σ αᵢyᵢK(xᵢ,x) + b.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Bagging (Bootstrap Aggregating)</div>
+      <div class="gc-formula">ŷ = (1/B) Σᵦ Tᵦ(x)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Reduces variance by averaging multiple models trained on different bootstrap samples. Works best with high-variance base learners (deep trees).</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Random Forest (bagging + random features). Also standalone BaggingClassifier.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Sample m points with replacement, train a model, repeat B times. Average (or majority vote) predictions from all B models.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Boosting</div>
+      <div class="gc-formula">Fₘ = Fₘ₋₁ + η·hₘ</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Reduces bias by sequentially correcting errors. Each new model focuses on previously misclassified or poorly predicted points.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> GBM, XGBoost, LightGBM, CatBoost, AdaBoost. State-of-the-art on tabular data.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Fit model to pseudo-residuals (negative gradient of loss). Shrink its contribution by η. Repeat M times.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Cross-Entropy Loss</div>
+      <div class="gc-formula">L = −[y·log(p) + (1−y)·log(1−p)]</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Heavily penalizes confident wrong predictions (log(0) → ∞). Derived from MLE under Bernoulli distribution. Convex — guaranteed global minimum.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Logistic regression, neural net classification, gradient boosting for classification.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Binary: −[y·log(ŷ) + (1−y)·log(1−ŷ)]. Multi-class: −Σₖ yₖ·log(ŷₖ) (categorical cross-entropy).</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Feature Scaling / Normalization</div>
+      <div class="gc-formula">z-score: x' = (x−μ)/σ, min-max: x' = (x−min)/(max−min)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Unscaled features cause gradient descent to take inefficient zigzag paths. Distance metrics (KNN, SVM) are completely wrong without scaling.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> KNN, SVM, Logistic Regression, Linear Regression, Neural Nets. Not needed: Decision Trees, Random Forest, GBM (tree splits are scale-invariant).</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> StandardScaler (z-score) for normally distributed features; MinMaxScaler for bounded ranges; RobustScaler for outliers.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Curse of Dimensionality</div>
+      <div class="gc-formula">Vol(unit ball) → 0 as d → ∞</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> In high dimensions, all points become equidistant. KNN breaks down because "nearest neighbor" is not meaningfully close. More features ≠ better.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> KNN (severely affected), SVM (moderately), clustering. Trees are relatively robust.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Mitigate with dimensionality reduction (PCA, t-SNE), feature selection, regularization, domain knowledge.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">MLE (Maximum Likelihood Estimation)</div>
+      <div class="gc-formula">θ* = argmax_θ Σᵢ log P(yᵢ | xᵢ, θ)</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Principled statistical foundation: find parameters that make the observed data most probable under the assumed distribution.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Logistic regression (MLE ↔ cross-entropy), linear regression (MLE under Gaussian noise ↔ MSE), GBMs.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Log-likelihood is concave → gradient ascent finds global max. Negating gives cross-entropy loss for gradient descent.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Hyperparameter vs Parameter</div>
+      <div class="gc-formula">θ = learned, H = set before training</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Parameters (θ, w) are learned from data. Hyperparameters (k in KNN, λ in Ridge, max_depth in trees) control the learning process itself — not learned.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Every ML algorithm has both. Grid search, random search, Bayesian optimization tune hyperparameters.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> Use k-fold cross-validation to estimate generalization performance for each hyperparameter combination.</p>
+    </div>
+
+    <div class="gloss-card">
+      <div class="gc-term">Gini Impurity</div>
+      <div class="gc-formula">Gini(S) = 1 − Σₖ pₖ²</div>
+      <p class="gc-why"><span class="gc-label why">WHY</span> Measures how often a randomly chosen element would be misclassified. Pure node (one class) → Gini=0. Used in CART and scikit-learn's Decision Tree.</p>
+      <p class="gc-where"><span class="gc-label where">WHERE</span> Decision Trees, Random Forests. Also used to compute feature importance scores.</p>
+      <p class="gc-how"><span class="gc-label how">HOW</span> At each node split, compute weighted Gini of children: Gain = Gini(parent) − Σᵥ (|Sᵥ|/|S|)·Gini(Sᵥ). Pick split with max gain.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- COMPARISON TABLE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<section class="section" id="compare" style="border-bottom: none;">
+  <div class="section-header" style="margin-bottom:2rem;">
+    <div class="section-num" style="font-size:3rem;">≡</div>
+    <div class="section-title-block">
+      <h2>Algorithm Comparison</h2>
+    </div>
+  </div>
+
+  <div class="compare-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Algorithm</th>
+          <th>Type</th>
+          <th>Interpretable?</th>
+          <th>Scaling Required?</th>
+          <th>Handles Non-linearity?</th>
+          <th>Overfits easily?</th>
+          <th>Key Hyperparameter</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Linear Regression</td>
+          <td>Regression</td>
+          <td>✅ Yes</td>
+          <td>Recommended</td>
+          <td>❌ No</td>
+          <td>Low</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Polynomial Regression</td>
+          <td>Regression</td>
+          <td>Partially</td>
+          <td>Recommended</td>
+          <td>✅ Yes</td>
+          <td>High (high d)</td>
+          <td>degree</td>
+        </tr>
+        <tr>
+          <td>Logistic Regression</td>
+          <td>Classification</td>
+          <td>✅ Yes</td>
+          <td>Recommended</td>
+          <td>Limited</td>
+          <td>Low</td>
+          <td>C (regularization)</td>
+        </tr>
+        <tr>
+          <td>SVM</td>
+          <td>Classification / Regression</td>
+          <td>❌ No</td>
+          <td>✅ Required</td>
+          <td>✅ Yes (kernel)</td>
+          <td>Medium</td>
+          <td>C, γ, kernel</td>
+        </tr>
+        <tr>
+          <td>KNN</td>
+          <td>Both</td>
+          <td>✅ Yes</td>
+          <td>✅ Required</td>
+          <td>✅ Yes</td>
+          <td>High (k=1)</td>
+          <td>k, distance metric</td>
+        </tr>
+        <tr>
+          <td>Decision Tree</td>
+          <td>Both</td>
+          <td>✅ Yes</td>
+          <td>❌ Not needed</td>
+          <td>✅ Yes</td>
+          <td>High (deep)</td>
+          <td>max_depth</td>
+        </tr>
+        <tr>
+          <td>Random Forest</td>
+          <td>Both</td>
+          <td>Partially</td>
+          <td>❌ Not needed</td>
+          <td>✅ Yes</td>
+          <td>Low</td>
+          <td>n_estimators, max_features</td>
+        </tr>
+        <tr>
+          <td>Gradient Boosting</td>
+          <td>Both</td>
+          <td>❌ No</td>
+          <td>❌ Not needed</td>
+          <td>✅ Yes</td>
+          <td>Medium</td>
+          <td>n_estimators, η, max_depth</td>
+        </tr>
+        <tr>
+          <td>Ridge (L2)</td>
+          <td>Regression</td>
+          <td>✅ Yes</td>
+          <td>Recommended</td>
+          <td>❌ No</td>
+          <td>Very Low</td>
+          <td>λ (alpha)</td>
+        </tr>
+        <tr>
+          <td>Lasso (L1)</td>
+          <td>Regression</td>
+          <td>✅ Yes</td>
+          <td>Recommended</td>
+          <td>❌ No</td>
+          <td>Very Low</td>
+          <td>λ (alpha)</td>
+        </tr>
+        <tr>
+          <td>ElasticNet</td>
+          <td>Regression</td>
+          <td>✅ Yes</td>
+          <td>Recommended</td>
+          <td>❌ No</td>
+          <td>Very Low</td>
+          <td>λ, l1_ratio</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>ML Algorithms Reference Guide &nbsp;·&nbsp; <span>Mathematics · Formulas · Concepts</span></p>
+  <p style="margin-top:0.5rem;">Built for learning &amp; GitHub reference &nbsp;·&nbsp; All formulas verified</p>
+</footer>
+
+</body>
+</html>
