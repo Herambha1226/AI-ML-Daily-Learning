@@ -1,21 +1,35 @@
 import cv2
 import mediapipe as mp 
 import numpy as np 
+from collections import deque
 
 mp_hands = mp.solutions.hands
 hand_detect = mp_hands.Hands(
     max_num_hands = 1,
-    min_detection_confidence = 0.8,
-    min_tracking_confidence = 0.8
+    min_detection_confidence = 0.6,
+    min_tracking_confidence = 0.5
 )
 mp_draw = mp.solutions.drawing_utils
 
 cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
+cap.set(cv2.CAP_PROP_FPS,60)
+cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
+
+smooth_buf = deque(maxlen=3)
 
 canvas = np.zeros((720,1280,3),np.uint8)
 px,py = 0,0
+
+frame_lost = 0
+MAX_LOST_FRAMES = 5
+
+def smooth_point(x,y):
+    smooth_buf.append((x,y))
+    avg_x = int(sum(p[0] for p in smooth_buf) / len(smooth_buf))
+    avg_y = int(sum(p[1] for p in smooth_buf) / len(smooth_buf))
+    return avg_x,avg_y
 
 def fingers_up(frame):
     h,w,_ = frame.shape
@@ -51,9 +65,15 @@ while True:
     frame = cv2.addWeighted(frame,0.2,dark_glass,0.8,0)
 
     rgb = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+    rgb.flags.writeable = False
     result = hand_detect.process(rgb)
+    rgb.flags.writeable = True
+
+    hand_detected = False
 
     if result.multi_hand_landmarks:
+        hand_detected = True
+        frame_lost = 0
         for hand in result.multi_hand_landmarks:
             mp_draw.draw_landmarks(frame,hand,mp_hands.HAND_CONNECTIONS)
 
@@ -62,6 +82,10 @@ while True:
 
             fx,fy = int(thumb.x*w),int(thumb.y*h)
             ix,iy = int(index.x*w),int(index.y*h)
+
+            ix,iy = smooth_point(ix,iy)
+
+            last_x,last_y = ix,iy
 
             distance = int(((fx - ix)**2 + (fy - iy)**2)**0.5)
 
@@ -72,7 +96,7 @@ while True:
 
                 cv2.circle(frame,(ix,iy),10,(255,0,255),cv2.FILLED)
                 if px == 0 and py == 0:px,py = ix,iy
-                cv2.line(canvas,(px,py),(ix,iy),(255,54,200),5)
+                cv2.line(canvas,(px,py),(ix,iy),(255,54,200),20)
                 px,py = ix,iy
             elif fingers == [1,1,1,1,1]:
                 # when all fingers are up erase the draw lines
@@ -82,6 +106,13 @@ while True:
                 px, py = ix, iy
             else:
                 px,py = 0,0
+    else:
+        frame_lost += 1
+        smooth_buf.clear()
+
+        if frame_lost > MAX_LOST_FRAMES:
+            px,py = 0,0
+
 
     canvas_gray = cv2.cvtColor(canvas,cv2.COLOR_BGR2GRAY)
     _,mask_inv = cv2.threshold(canvas_gray,20,255,cv2.THRESH_BINARY_INV)
